@@ -157,14 +157,14 @@
             ctx.fillText(`Game Over! Final Score: ${score}`, canvas.width / 2, canvas.height / 2);
             replayButton.style.display = 'block';  // Show replay button
 
-            // Play audio only if score is between 10 and 19
+            // After showing the Game Over message, play audio or show video based on the score
             if (score >= 10 && score < 20) {
                 turnoffAudio.play();
-            }
-
-            // Show video if score is 20 or more
-            if (score >= 20) {
-                fightVideo.style.display = 'block'; // Video will autoplay
+            } else if (score >= 20) {
+                setTimeout(() => {
+                    fightVideo.style.display = 'block';
+                    fightVideo.play();
+                }, 500); // Small delay to ensure Game Over message is displayed first
             }
         }
 
