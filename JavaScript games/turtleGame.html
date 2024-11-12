@@ -51,7 +51,7 @@
     <canvas id="gameCanvas" width="600" height="400"></canvas>
     <button id="replayButton" onclick="resetGame()">Replay</button>
     <audio id="turnoffAudio" src="assets/turnoff.mp3"></audio> <!-- Audio element -->
-    <video id="fightVideo" src="assets/fight.mp4" controls autoplay></video> <!-- Video element with autoplay -->
+    <video id="fightVideo" src="assets/fight.mp4" controls></video> <!-- Video element without autoplay or muted -->
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -157,15 +157,25 @@
             ctx.fillText(`Game Over! Final Score: ${score}`, canvas.width / 2, canvas.height / 2);
             replayButton.style.display = 'block';  // Show replay button
 
-            // After showing the Game Over message, play audio or show video based on the score
+            // After showing the Game Over message, prepare to play audio or show video based on the score
             if (score >= 10 && score < 20) {
                 turnoffAudio.play();
             } else if (score >= 20) {
-                setTimeout(() => {
-                    fightVideo.style.display = 'block';
-                    fightVideo.play();
-                }, 500); // Small delay to ensure Game Over message is displayed first
+                // Show a message to the user to click replay to watch the video
+                ctx.fillText("Click Replay to watch the video!", canvas.width / 2, canvas.height / 2 + 50);
+                
+                // Add event listener to replay button to play video
+                replayButton.addEventListener('click', playVideoWithSound);
             }
+        }
+
+        // Function to play video with sound on user interaction
+        function playVideoWithSound() {
+            fightVideo.style.display = 'block';
+            fightVideo.play().catch(error => {
+                console.log("Video playback failed:", error);
+            });
+            replayButton.removeEventListener('click', playVideoWithSound); // Remove listener to avoid multiple plays
         }
 
         // Reset the game
