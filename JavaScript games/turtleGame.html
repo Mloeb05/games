@@ -6,7 +6,7 @@
     <title>Turtle Apple Game</title>
     <style>
         canvas {
-            background-color: #87CEEB;
+            background-color: #FFB6C1;
             display: block;
             margin: auto;
             border: 2px solid #333;
@@ -22,7 +22,7 @@
     </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="600" height="400"></canvas>
+    <canvas id="gameCanvas" width="600" height="450"></canvas>
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -30,6 +30,12 @@
         // Game variables
         const tileSize = 30;
         let score = 0;
+
+        // Turtle and apple images
+        const turtleImg = new Image();
+        turtleImg.src = 'assets/turtle.png';  // Path to turtle image
+        const appleImg = new Image();
+        appleImg.src = 'assets/apple.png';  // Path to apple image
 
         // Turtle and apple positions
         let turtle = { x: 0, y: 0 };
@@ -91,13 +97,11 @@
             // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Draw turtle
-            ctx.fillStyle = 'green';
-            ctx.fillRect(turtle.x, turtle.y, tileSize, tileSize);
+            // Draw apple as image
+            ctx.drawImage(appleImg, apple.x, apple.y, tileSize, tileSize);
 
-            // Draw apple
-            ctx.fillStyle = 'red';
-            ctx.fillRect(apple.x, apple.y, tileSize, tileSize);
+            // Draw turtle as image
+            ctx.drawImage(turtleImg, turtle.x, turtle.y, tileSize, tileSize);
 
             // Draw score
             ctx.fillStyle = 'black';
@@ -108,7 +112,13 @@
             setTimeout(gameLoop, 100);
         }
 
-        gameLoop();
+        // Start the game loop when both images are loaded
+        turtleImg.onload = () => {
+            if (appleImg.complete) gameLoop();
+        };
+        appleImg.onload = () => {
+            if (turtleImg.complete) gameLoop();
+        };
     </script>
 </body>
 </html>
