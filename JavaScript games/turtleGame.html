@@ -51,7 +51,7 @@
     <canvas id="gameCanvas" width="600" height="400"></canvas>
     <button id="replayButton" onclick="resetGame()">Replay</button>
     <audio id="turnoffAudio" src="assets/turnoff.mp3"></audio> <!-- Audio element -->
-    <video id="fightVideo" src="assets/fight.mp4" controls></video> <!-- Video element, hidden initially -->
+    <video id="fightVideo" src="assets/fight.mp4" controls autoplay></video> <!-- Video element with autoplay -->
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -64,8 +64,6 @@
         const tileSize = 30;
         let score = 0;
         let gameOver = false;
-        let audioPlayed = false; // Track if audio has been played in 10-19 range
-        let videoPlayed = false; // Track if video has been played for score 20+
 
         // Turtle and apple images
         const turtleImg = new Image();
@@ -129,19 +127,6 @@
             if (turtle.x === apple.x && turtle.y === apple.y) {
                 score++;
                 scoreDisplay.textContent = `Score: ${score}`; // Update score outside canvas
-                
-                // Play audio if score is between 10 and 19
-                if (score >= 10 && score < 20 && !audioPlayed) {
-                    turnoffAudio.play();
-                    audioPlayed = true; // Set flag to prevent repeated playback
-                }
-
-                // Play video if score is 20 or more
-                if (score >= 20 && !videoPlayed) {
-                    fightVideo.style.display = 'block'; // Show the video
-                    fightVideo.play();
-                    videoPlayed = true; // Set flag to prevent repeated playback
-                }
 
                 apple = {
                     x: Math.floor(Math.random() * (canvas.width / tileSize)) * tileSize,
@@ -171,17 +156,22 @@
             ctx.textAlign = 'center';
             ctx.fillText(`Game Over! Final Score: ${score}`, canvas.width / 2, canvas.height / 2);
             replayButton.style.display = 'block';  // Show replay button
+
+            // Play audio if score is between 10 and 19
+            if (score >= 10 && score < 20) {
+                turnoffAudio.play();
+            }
+
+            // Show video if score is 20 or more
+            if (score >= 20) {
+                fightVideo.style.display = 'block'; // Video will autoplay
+            }
         }
 
         // Reset the game
         function resetGame() {
             // Reset game variables
             score = 0;
-            audioPlayed = false; // Reset audio flag
-            videoPlayed = false; // Reset video flag
-            fightVideo.style.display = 'none'; // Hide video again
-            fightVideo.pause(); // Stop video playback
-            fightVideo.currentTime = 0; // Reset video to start
             scoreDisplay.textContent = `Score: ${score}`; // Reset score display
             gameOver = false;
             turtle = { x: 0, y: 0 };
@@ -191,8 +181,15 @@
                 y: Math.floor(Math.random() * (canvas.height / tileSize)) * tileSize
             };
 
-            // Hide replay button and restart game loop
+            // Hide replay button
             replayButton.style.display = 'none';
+
+            // Stop and hide the video
+            fightVideo.style.display = 'none';
+            fightVideo.pause();
+            fightVideo.currentTime = 0;
+
+            // Restart game loop
             gameLoop();
         }
 
