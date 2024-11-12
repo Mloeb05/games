@@ -6,27 +6,44 @@
     <title>Turtle Apple Game</title>
     <style>
         canvas {
-            background-color: #FFB6C1;
+            background-color: #87CEEB;
             display: block;
             margin: auto;
             border: 2px solid #333;
         }
         body {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
             font-family: Arial, sans-serif;
         }
+        #replayButton {
+            display: none;
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #replayButton:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
     <canvas id="gameCanvas" width="600" height="400"></canvas>
+    <button id="replayButton" onclick="resetGame()">Replay</button>
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        
+        const replayButton = document.getElementById('replayButton');
+
         // Game variables
         const tileSize = 30;
         let score = 0;
@@ -125,6 +142,24 @@
             ctx.font = '30px Arial';
             ctx.textAlign = 'center';
             ctx.fillText(`Game Over! Final Score: ${score}`, canvas.width / 2, canvas.height / 2);
+            replayButton.style.display = 'block';  // Show replay button
+        }
+
+        // Reset the game
+        function resetGame() {
+            // Reset game variables
+            score = 0;
+            gameOver = false;
+            turtle = { x: 0, y: 0 };
+            direction = { x: 0, y: 0 };
+            apple = {
+                x: Math.floor(Math.random() * (canvas.width / tileSize)) * tileSize,
+                y: Math.floor(Math.random() * (canvas.height / tileSize)) * tileSize
+            };
+
+            // Hide replay button and restart game loop
+            replayButton.style.display = 'none';
+            gameLoop();
         }
 
         // Start the game loop when both images are loaded
