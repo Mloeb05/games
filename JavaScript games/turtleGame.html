@@ -157,7 +157,7 @@
             ctx.fillText(`Game Over! Final Score: ${score}`, canvas.width / 2, canvas.height / 2);
             replayButton.style.display = 'block';  // Show replay button
 
-            // Play audio if score is between 10 and 19
+            // Play audio only if score is between 10 and 19
             if (score >= 10 && score < 20) {
                 turnoffAudio.play();
             }
