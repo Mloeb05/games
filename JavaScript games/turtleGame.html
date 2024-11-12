@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turtle Apple Game</title>
+    <style>
+        canvas {
+            background-color: #87CEEB;
+            display: block;
+            margin: auto;
+            border: 2px solid #333;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="600" height="400"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Game variables
+        const tileSize = 30;
+        let score = 0;
+
+        // Turtle and apple positions
+        let turtle = { x: 0, y: 0 };
+        let apple = {
+            x: Math.floor(Math.random() * (canvas.width / tileSize)) * tileSize,
+            y: Math.floor(Math.random() * (canvas.height / tileSize)) * tileSize
+        };
+        
+        // Movement direction
+        let direction = { x: 0, y: 0 };
+
+        // Event listener for keypresses
+        document.addEventListener('keydown', (event) => {
+            switch (event.key) {
+                case 'ArrowUp': 
+                case 'w': 
+                case 'W':
+                    direction = { x: 0, y: -tileSize }; 
+                    break;
+                case 'ArrowDown': 
+                case 's': 
+                case 'S':
+                    direction = { x: 0, y: tileSize }; 
+                    break;
+                case 'ArrowLeft': 
+                case 'a': 
+                case 'A':
+                    direction = { x: -tileSize, y: 0 }; 
+                    break;
+                case 'ArrowRight': 
+                case 'd': 
+                case 'D':
+                    direction = { x: tileSize, y: 0 }; 
+                    break;
+            }
+        });
+
+        // Game loop
+        function gameLoop() {
+            // Move turtle
+            turtle.x += direction.x;
+            turtle.y += direction.y;
+
+            // Check for boundary collision
+            if (turtle.x < 0) turtle.x = canvas.width - tileSize;
+            if (turtle.x >= canvas.width) turtle.x = 0;
+            if (turtle.y < 0) turtle.y = canvas.height - tileSize;
+            if (turtle.y >= canvas.height) turtle.y = 0;
+
+            // Check if turtle eats apple
+            if (turtle.x === apple.x && turtle.y === apple.y) {
+                score++;
+                apple = {
+                    x: Math.floor(Math.random() * (canvas.width / tileSize)) * tileSize,
+                    y: Math.floor(Math.random() * (canvas.height / tileSize)) * tileSize
+                };
+            }
+
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw turtle
+            ctx.fillStyle = 'green';
+            ctx.fillRect(turtle.x, turtle.y, tileSize, tileSize);
+
+            // Draw apple
+            ctx.fillStyle = 'red';
+            ctx.fillRect(apple.x, apple.y, tileSize, tileSize);
+
+            // Draw score
+            ctx.fillStyle = 'black';
+            ctx.font = '20px Arial';
+            ctx.fillText(`Score: ${score}`, 10, 20);
+
+            // Repeat game loop
+            setTimeout(gameLoop, 100);
+        }
+
+        gameLoop();
+    </script>
+</body>
+</html>
